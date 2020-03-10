@@ -1,26 +1,34 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+import Header from "./components/Header";
+import "./App.css";
+import Characters from "./components/Characters";
 
 function App() {
+  const [hasError, setErrors] = useState(false);
+  const [starWarsCharacters, setCharacters] = useState({});
+  useEffect(() => {
+    async function fetchData() {
+      const res = await fetch("https://swapi.co/api/people");
+      res
+        .json()
+        .then(res => setCharacters(res))
+        .catch(err => setErrors(err));
+    }
+
+    fetchData();
+  });
+
+  const characters = ["C3PO", "R2D2"];
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Header />
+      <Characters myArray={starWarsCharacters.results} />
+      {/*<span>{JSON.stringify((starWarsCharacters.results))}</span>*/}
     </div>
   );
 }
 
 export default App;
+
+
