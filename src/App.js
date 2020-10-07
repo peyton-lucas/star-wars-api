@@ -1,29 +1,57 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Header from "./components/Header";
 import "./App.css";
 import Characters from "./components/Characters";
+const axios = require("axios");
+// import axios from 'axios'
 
 function App() {
-  const [hasError, setErrors] = useState(false);
-  const [starWarsCharacters, setCharacters] = useState({});
+  const [starWarsCharacters, setCharacters] = useState(undefined);
   useEffect(() => {
+  //   const fetchData = useCallback(() => {
+  //     axios.get("https://swapi.dev/api/people")
+  //       .then((response) => {
+  //         setCharacters(response.data)
+  //       })
+  //       .catch((error) => {
+  //         console.log(error)
+  //       })
+  //   }, []);
+  //
+  //   useEffect(() => {
+  //     fetchData()
+  //   }, [fetchData]);
+
     async function fetchData() {
-      const res = await fetch("https://swapi.co/api/people");
+      const res = await fetch("https://swapi.dev/api/people");
       res
         .json()
-        .then(res => setCharacters(res))
-        .catch(err => setErrors(err));
+        .then(res => {
+          console.log(res);
+          setCharacters(res.results);
+        })
+        .catch((err => console.log(err)))
     }
-
     fetchData();
-  });
+  }, []);
 
-  const characters = ["C3PO", "R2D2"];
+  console.log("setCharacters: " + setCharacters);
+  console.log("starWarsCharacters: " + starWarsCharacters);
+
+  if (starWarsCharacters === undefined) {
+    return (
+      <div>
+        <Header />
+        Loading characters
+      </div>
+    );
+  }
 
   return (
     <div>
       <Header />
-      <Characters myArray={starWarsCharacters.results} />
+      <br />
+      <Characters myArray={starWarsCharacters} />
       {/*<span>{JSON.stringify((starWarsCharacters.results))}</span>*/}
     </div>
   );
